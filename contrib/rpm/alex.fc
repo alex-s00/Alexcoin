@@ -1,0 +1,8 @@
+/usr/bin/alex-cli		--	gen_context(system_u:object_r:alex_exec_t,s0)
+/usr/sbin/alexd		--	gen_context(system_u:object_r:alex_exec_t,s0)
+/usr/lib(64)?/alex/alexd		--	gen_context(system_u:object_r:alex_exec_t,s0)
+
+/etc/alex(/.*)?		gen_context(system_u:object_r:alex_conf_t,s0)
+/var/lib/alex(/.*)?		gen_context(system_u:object_r:alex_var_lib_t,s0)
+
+(/var)?/run/alexd(/.*)?   gen_context(system_u:object_r:alex_var_run_t,s0)

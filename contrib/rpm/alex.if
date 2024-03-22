@@ -1,0 +1,157 @@
+
+## <summary>policy for alex</summary>
+
+
+########################################
+## <summary>
+##	Transition to alex.
+## </summary>
+## <param name="domain">
+## <summary>
+##	Domain allowed to transition.
+## </summary>
+## </param>
+#
+interface(`alex_domtrans',`
+	gen_require(`
+		type alex_t, alex_exec_t;
+	')
+
+	corecmd_search_bin($1)
+	domtrans_pattern($1, alex_exec_t, alex_t)
+')
+
+
+########################################
+## <summary>
+##	Execute alex server in the alex domain.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`alex_initrc_domtrans',`
+	gen_require(`
+		type alex_initrc_exec_t;
+	')
+
+	init_labeled_script_domtrans($1, alex_initrc_exec_t)
+')
+
+
+########################################
+## <summary>
+##	Search alex lib directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`alex_search_lib',`
+	gen_require(`
+		type alex_var_lib_t;
+	')
+
+	allow $1 alex_var_lib_t:dir search_dir_perms;
+	files_search_var_lib($1)
+')
+
+########################################
+## <summary>
+##	Read alex lib files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`alex_read_lib_files',`
+	gen_require(`
+		type alex_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	read_files_pattern($1, alex_var_lib_t, alex_var_lib_t)
+')
+
+########################################
+## <summary>
+##	Manage alex lib files.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`alex_manage_lib_files',`
+	gen_require(`
+		type alex_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	manage_files_pattern($1, alex_var_lib_t, alex_var_lib_t)
+')
+
+########################################
+## <summary>
+##	Manage alex lib directories.
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+#
+interface(`alex_manage_lib_dirs',`
+	gen_require(`
+		type alex_var_lib_t;
+	')
+
+	files_search_var_lib($1)
+	manage_dirs_pattern($1, alex_var_lib_t, alex_var_lib_t)
+')
+
+
+########################################
+## <summary>
+##	All of the rules required to administrate
+##	a alex environment
+## </summary>
+## <param name="domain">
+##	<summary>
+##	Domain allowed access.
+##	</summary>
+## </param>
+## <param name="role">
+##	<summary>
+##	Role allowed access.
+##	</summary>
+## </param>
+## <rolecap/>
+#
+interface(`alex_admin',`
+	gen_require(`
+		type alex_t;
+		type alex_initrc_exec_t;
+		type alex_var_lib_t;
+	')
+
+	allow $1 alex_t:process { ptrace signal_perms };
+	ps_process_pattern($1, alex_t)
+
+	alex_initrc_domtrans($1)
+	domain_system_change_exemption($1)
+	role_transition $2 alex_initrc_exec_t system_r;
+	allow $2 system_r;
+
+	files_search_var_lib($1)
+	admin_pattern($1, alex_var_lib_t)
+
+')
+

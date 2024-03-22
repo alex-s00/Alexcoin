@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Alex Core
+Comment=Connect to the Alex P2P Network
+Comment[de]=Verbinde mit dem Alex peer-to-peer Netzwerk
+Comment[fr]=Alex, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Alex, eşten eşe kriptografik sanal para birimi
+Exec=alex-qt %u
+Terminal=false
+Type=Application
+Icon=alex128
+MimeType=x-scheme-handler/alex;
+Categories=Office;Finance;

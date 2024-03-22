@@ -1,0 +1,81 @@
+policy_module(alex, 1.100.1)
+
+########################################
+#
+# Declarations
+#
+
+type alex_t;
+type alex_exec_t;
+init_daemon_domain(alex_t, alex_exec_t)
+
+permissive alex_t;
+
+type alex_initrc_exec_t;
+init_script_file(alex_initrc_exec_t)
+
+type alex_conf_t;
+files_type(alex_conf_t)
+
+type alex_var_lib_t;
+files_type(alex_var_lib_t)
+
+type alex_var_run_t;
+files_type(alex_var_run_t)
+
+type alex_port_t;
+corenet_port(alex_port_t)
+
+########################################
+#
+# alex local policy
+#
+allow alex_t self:process { fork };
+
+allow alex_t self:fifo_file rw_fifo_file_perms;
+allow alex_t self:unix_stream_socket create_stream_socket_perms;
+
+manage_dirs_pattern(alex_t, alex_conf_t, alex_conf_t)
+manage_files_pattern(alex_t, alex_conf_t, alex_conf_t)
+
+manage_dirs_pattern(alex_t, alex_var_lib_t, alex_var_lib_t)
+manage_files_pattern(alex_t, alex_var_lib_t, alex_var_lib_t)
+files_var_lib_filetrans(alex_t, alex_var_lib_t, { dir file })
+
+manage_dirs_pattern(alex_t, alex_var_run_t, alex_var_run_t)
+manage_files_pattern(alex_t, alex_var_run_t, alex_var_run_t)
+
+sysnet_dns_name_resolve(alex_t)
+corenet_all_recvfrom_unlabeled(alex_t)
+
+allow alex_t self:tcp_socket create_stream_socket_perms;
+corenet_tcp_sendrecv_generic_if(alex_t)
+corenet_tcp_sendrecv_generic_node(alex_t)
+corenet_tcp_sendrecv_all_ports(alex_t)
+corenet_tcp_bind_generic_node(alex_t)
+
+gen_require(`
+    type alex_port_t;
+')
+allow alex_t alex_port_t:tcp_socket name_bind;
+
+gen_require(`
+    type alex_port_t;
+')
+allow alex_t alex_port_t:tcp_socket name_connect;
+
+domain_use_interactive_fds(alex_t)
+
+files_read_etc_files(alex_t)
+
+miscfiles_read_localization(alex_t)
+
+sysnet_dns_name_resolve(alex_t)
+
+allow alex_t alex_exec_t:file execute_no_trans;
+allow alex_t self:process setsched;
+corecmd_exec_ls(alex_t)
+corenet_tcp_connect_http_port(alex_t)
+dev_read_urand(alex_t)
+fs_getattr_xattr_fs(alex_t)
+kernel_read_system_state(alex_t)

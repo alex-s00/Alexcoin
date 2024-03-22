@@ -1,0 +1,6 @@
+usr/local/bin/alex-qt usr/bin
+share/pixmaps/alex32.xpm usr/share/pixmaps
+share/pixmaps/alex16.xpm usr/share/pixmaps
+share/pixmaps/alex128.png usr/share/pixmaps
+debian/alex-qt.desktop usr/share/applications
+debian/alex-qt.protocol usr/share/kde4/services/
